@@ -37,13 +37,16 @@ class Board {
 	}
 	
 	
-	tryMove(row, col, mark) {
+	checkMoveIsValid(row, col) { 
 		if (this.board[row][col] == " ") {
-			this.board[row][col] = mark;
 			return true;
 		} else {
 			return false;
 		}
+	}
+	
+	placeMove(row, col, mark) {
+		this.board[row][col] = mark;
 	}
 	
 	
