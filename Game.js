@@ -50,24 +50,19 @@ class Game {
 	}
 	
 	getMove() {
-		var row;
-		var col;
 		//ask the current player for their move
 		this.currentPlayer.requestMove().then((move) => {
-			row = move[0] - 1;
-			col = move[1] - 1;
+			let row = move[0] - 1;
+			let col = move[1] - 1;
 			
-			//ask the board if the players move is valid
-			if (this.board.checkMoveIsValid(row, col)) {
-				//if the move is valid, place it on the board and then end the current players turn
-				this.board.placeMove(row, col, this.currentPlayer.mark);
+			if (this.board.tryMove(row, col, this.currentPlayer.mark)) {
 				this.currentPlayer.updateScore(row, col);
 				this.endTurn();
 			} else {
-				//if the move is not valid, tell the user their move is invalid then call getMove() recursively so they can try again
 				process.stdout.write("\n*********Invalid Move - try again*********\n")
 				this.getMove();
 			}
+			
 		});
 		
 	}
@@ -79,16 +74,18 @@ class Game {
 			this.gameOver() //show the game over screen
 		} else {
 		//if the game is not over switch who's turn it is and then start their turn
-			if (this.currentPlayer.mark == "X") //checking if players mark is 'X' is simpler/faster than checking if currentPlayer object is equal to playerX, and if playerX/playerO don't have correct marks this will make the bug apparent rather than working correctly and causing issues down the line
+			if (this.currentPlayer == this.playerX) 
 				this.currentPlayer = this.playerO;
-			else
+			else if (this.currentPlayer == this.playerO)
 				this.currentPlayer = this.playerX;
+			
 			this.takeTurn();
 		}
 	}
 	
 	gameOver() {
 		this.clearConsole();
+		this.board.renderBoard();
 	 	process.stdout.write("****************************************************\n");
 		process.stdout.write("***************--- Player " + this.currentPlayer.mark + " Has Won ---*************\n")
 	 	process.stdout.write("****************************************************\n");
@@ -119,7 +116,7 @@ class Game {
 	*	Get Multiple inputs from the user. Accepts 1 or more prompts to display to the user, and retreives 1 input for each prompt. returns the values input by the user
 	*
 	*	@param [String] prompts - a list of prompts/questions to print to the console before requesting each input from the user
-	* @returns Promise ([String]) - returns a promise that is fulfilled when user has entered n inputs(n = prompts.length). Resolves with an array of strings containing each value input by the user, in order.
+	* @returns Promise([String]) - returns a promise that is fulfilled when user has entered n inputs(n = prompts.length). Resolves with an array of strings containing each value input by the user, in order.
 	*
 	* TODO: handle promise rejection.
 	**/

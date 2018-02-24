@@ -37,7 +37,12 @@ class Board {
 	}
 	
 	
-	checkMoveIsValid(row, col) { 
+	isMoveValid(row, col) { 
+		if (this.board[row] == null)
+			return false;
+		if (this.board[row][col] == null)
+			return false;
+		
 		if (this.board[row][col] == " ") {
 			return true;
 		} else {
@@ -45,9 +50,41 @@ class Board {
 		}
 	}
 	
+	/**
+	* Place an 'X' or 'O' in one of the cells of the board
+	* 
+	* @param Number row - the row in which the X/O will be placed(0, 1, or 2)
+	* @param Number col - the column in which the X/O will be placed(0, 1, or 2)
+	* @param String mark - the mark that should be placed in the cell(X or O)
+	*
+	* Error: if the mark is not 'X' or 'O'
+	* Error: if row is less than 0 or greater than 2
+	* Error: if col is less than 0 or greater than 2
+	**/
 	placeMove(row, col, mark) {
+		if (mark != "X" && mark != "O")
+			throw Error("Invalid Argument Exception - Mark is not 'O' or 'X'. mark = ", mark);
+		if (row < 0 || row > 2)
+			throw Error('Argument Out Of Range Exception - row is less than 0 or greater than 2. row=', row);
+		if (col < 0 || col > 2)
+			throw Error('Argument Out Of Range Exception - col is less than 0 or greater than 2. col=', col);
 		this.board[row][col] = mark;
 	}
+	
+	tryMove(row, col, mark) {
+		if (this.isMoveValid(row, col)) {
+			try {
+				this.placeMove(row, col, mark);
+				return true;
+			} catch(err) {
+				return false;
+			}
+		} else {
+			return false;
+		}
+		
+	}
+	
 	
 	
 }
