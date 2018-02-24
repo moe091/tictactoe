@@ -59,12 +59,17 @@ class Game {
 				this.currentPlayer.updateScore(row, col);
 				this.endTurn();
 			} else {
-				process.stdout.write("\n*********Invalid Move - try again*********\n")
+				this.invalidMove();
 				this.getMove();
 			}
 			
 		});
 		
+	}
+	
+	
+	invalidMove() {
+		process.stdout.write("\n*********Invalid Move - try again*********\n");
 	}
 
 	endTurn() {
