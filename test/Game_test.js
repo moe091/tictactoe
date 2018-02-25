@@ -8,7 +8,7 @@ chai.use(sinonChai);
  
 
 //make sure that method used for receiving user input works
-describe("getInput(prompt)", function() { 
+describe("Game - getInput(prompt)", function() { 
 	var game; 
   beforeEach(function () {
 		game = new Game(); 
@@ -46,7 +46,7 @@ describe("getInput(prompt)", function() {
 
 
 
-describe("getInputs(prompt)", function() { 
+describe("Game - getInputs(prompts)", function() { 
 	var game; 
   beforeEach(function () {
 		game = new Game(); 
@@ -68,7 +68,6 @@ describe("getInputs(prompt)", function() {
 		
 		return game.getInputs(" ", " ")
 			.then(function (response) {
-              console.log("ans - ", response);
               expect(response[0]).to.be.equal("test input");
               expect(response[1]).to.be.equal("test input 2");
               expect(response.length).to.be.equal(2);
@@ -81,7 +80,7 @@ describe("getInputs(prompt)", function() {
 
 
 //make sure both users are initialized correctly and playerX goes first when the game is started
-describe("startGame()", function() {
+describe("Game - startGame()", function() {
 	var game; 
   beforeEach(function () {
 		game = new Game(); 
@@ -90,8 +89,8 @@ describe("startGame()", function() {
   });
 	
 	it("should initialize playerX and playerO's marks, and set playerX as the currentPlayer", function() {
-		//stub takeTurn so it doesn't get called and start writing to the console
-		var takeTurnStub = sinon.stub(game, "takeTurn");
+		//stub startTurn so it doesn't get called and start writing to the console
+		var startTurnStub = sinon.stub(game, "startTurn");
 		
 		//start the game
 		game.startGame();
@@ -110,7 +109,7 @@ describe("startGame()", function() {
 
 //make sure that endTurn is called when the player makes a valid move, but not before
  
-describe("getMove()", function() {
+describe("Game - getMove()", function() {
 	var game; 
   beforeEach(function () {
 		game = new Game(); 
@@ -121,7 +120,7 @@ describe("getMove()", function() {
 	
 	it("should call itself again repeatedly until tryMove returns true", function() {  
 		//so that game doesn't actually start when startGame() is called
-		var takeTurnStub = sinon.stub(game, "takeTurn");
+		var startTurnStub = sinon.stub(game, "startTurn");
 		//stub stdout.write so that tests don't get cluttered with console output from the game 
 		var getMoveSpy = sinon.spy(game, "getMove");
 		//making this a blank function so that it's output doesn't clutter the console
@@ -164,7 +163,7 @@ describe("getMove()", function() {
 	it("should call endTurn when a valid move is made", function() {
 		var endTurnStub = sinon.stub(game, "endTurn");
 		//so that game doesn't actually start when startGame() is called
-		var takeTurnStub = sinon.stub(game, "takeTurn");
+		var startTurnStub = sinon.stub(game, "startTurn");
 		//start the game
 		game.startGame();
 		//simple mock for requestMove. instead of waiting for user input, just return the move 1, 1
@@ -188,7 +187,7 @@ describe("getMove()", function() {
 	});
 });
 
-describe("endTurn()" , function() {
+describe("Game - endTurn()" , function() {
 	var game;
 	beforeEach(function() {
 		game = new Game();
@@ -211,11 +210,11 @@ describe("endTurn()" , function() {
 		expect(gameOverStub.callCount).to.be.equal(1);
 	});
 	
-	it("should call takeTurn if the current player hasn't won", function() {
+	it("should call startTurn if the current player hasn't won", function() {
 		//stub for gameOver method, prevent it from clutting console if it gets called(which should only happen in situations where this test fails, but that would still be confusing)
 		var gameOverStub = sinon.stub(game, "gameOver");
-		//stub takeTurn method to count how many times it is called
-		var takeTurnStub = sinon.stub(game, "takeTurn"); 
+		//stub startTurn method to count how many times it is called
+		var startTurnStub = sinon.stub(game, "startTurn"); 
 		game.currentPlayer = {
 			isWinner: false,
 			mark: "X"
@@ -223,14 +222,14 @@ describe("endTurn()" , function() {
 		
 		game.endTurn();
 		
-		expect(takeTurnStub.callCount).to.be.equal(1);
+		expect(startTurnStub.callCount).to.be.equal(1);
 	});
 	
 	it("should switch the currentPlayer, if the currentPlayer hasn't won the game already", function() {
 		//stub for gameOver method to prevent it from being called and clutting console
 		var gameOverStub = sinon.stub(game, "gameOver");
-		//stub takeTurn method to prevent it from being called and starting game loop, causing unintended side-effects
-		var takeTurnStub = sinon.stub(game, "takeTurn"); 
+		//stub startTurn method to prevent it from being called and starting game loop, causing unintended side-effects
+		var startTurnStub = sinon.stub(game, "startTurn"); 
 		game.playerX = {
 			mark: "X",
 			isWinner: false

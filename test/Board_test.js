@@ -4,7 +4,7 @@ var expect = require('Chai').expect;
 
 
 
-describe("board", function() {
+describe("Board - board", function() {
 	var board;
 	
 	beforeEach(function() {
@@ -20,7 +20,7 @@ describe("board", function() {
 	
 });
 
-describe("tryMove()", function() {
+describe("Board - tryMove(row, col, mark)", function() {
 	var board;
 	
 	beforeEach(function() {

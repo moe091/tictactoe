@@ -10,6 +10,7 @@ class Board {
 			[" ", " ", " "],
 			[" ", " ", " "]
 		];
+		this.moves = 0; //count moves, so that board can check if game has ended in a tie in constant time
 	}
 
 	//renders the entire board in its current state
@@ -69,6 +70,7 @@ class Board {
 		if (col < 0 || col > 2)
 			throw Error('Argument Out Of Range Exception - col is less than 0 or greater than 2. col=', col);
 		this.board[row][col] = mark;
+		this.moves++;
 	}
 	
 	tryMove(row, col, mark) {
@@ -83,6 +85,13 @@ class Board {
 			return false;
 		}
 		
+	}
+	
+	isGameOver() {
+		if (this.moves >= 9) 
+			return true;
+		else
+			return false;
 	}
 	
 	

@@ -5,7 +5,7 @@ var expect = require('Chai').expect;
 
 
 
-describe("initPlayer", function() {
+describe("HumanPlayer - initPlayer(mark)", function() {
 	var player
 	
     beforeEach(function() {
@@ -47,61 +47,111 @@ describe("initPlayer", function() {
     });
 });
 
-describe("updateScore()", function() {
+describe("HumanPlayer updateScore(row, col)", function() {
 	var player
 	
     beforeEach(function() {
       player = new HumanPlayer(new Game()); 
+			//custom initPlayer, to separate functionality of default initPlayer function from these tests
+			player.customInitPlayer = function() {
+				this.rowScores = [[], [], []];
+				this.colScores = [[], [], []];
+				this.diagScores = [[], []];
+				this.isWinner = false;
+			}
     });
   
     it("should set player.isWinner to true if updateScores is called for all 3 of the spaces in any row", function() {
+			player.customInitPlayer('X');
       expect(player.isWinner).to.be.equal(false);
+      player.updateScore(0, 0);
+      player.updateScore(0, 1);
+      player.updateScore(0, 2);
+      expect(player.isWinner).to.be.equal(true);
+      
+			player.customInitPlayer('O');
+			expect(player.isWinner).to.be.equal(false);
+      player.updateScore(1, 0);
       player.updateScore(1, 1);
       player.updateScore(1, 2);
-      player.updateScore(1, 3);
       expect(player.isWinner).to.be.equal(true);
-      
-      player = new Player(new Game());
-      expect(player.isWinner).to.be.equal(false);
+			
+			player.customInitPlayer('X');
+			expect(player.isWinner).to.be.equal(false);
+      player.updateScore(2, 0);
       player.updateScore(2, 1);
       player.updateScore(2, 2);
-      player.updateScore(2, 3);
-      expect(player.isWinner).to.be.equal(true);
-      
-      
-      player = new Player(new Game());
-      expect(player.isWinner).to.be.equal(false);
-      player.updateScore(3, 1);
-      player.updateScore(3, 2);
-      player.updateScore(3, 3);
-      expect(player.isWinner).to.be.equal(true);
-      
-      
+			expect(player.isWinner).to.be.equal(true);
     });
   
     it("should set player.isWinner to true if updateScores is called for all 3 of the spaces in any column", function() {
-      player.initPlayer('X');
+			player.customInitPlayer('X');
+			expect(player.isWinner).to.be.equal(false);
+      player.updateScore(0, 0);
+      player.updateScore(1, 0);
+      player.updateScore(2, 0);
+			expect(player.isWinner).to.be.equal(true);
+			
+      player.customInitPlayer('O');
       expect(player.isWinner).to.be.equal(false);
+      player.updateScore(0, 1);
       player.updateScore(1, 1);
       player.updateScore(2, 1);
-      player.updateScore(3, 1);
       expect(player.isWinner).to.be.equal(true);
       
-      player.initPlayer('O');
-      expect(player.isWinner).to.be.equal(false);
+			player.customInitPlayer('X');
+			expect(player.isWinner).to.be.equal(false);
+      player.updateScore(0, 2);
       player.updateScore(1, 2);
       player.updateScore(2, 2);
-      player.updateScore(3, 2);
       expect(player.isWinner).to.be.equal(true);
-      
-      
-      player.initPlayer('X');
-      expect(player.isWinner).to.be.equal(false);
-      player.updateScore(1, 3);
-      player.updateScore(2, 3);
-      player.updateScore(3, 3);
-      expect(player.isWinner).to.be.equal(true);
-      
-      
     });
+	
+		it("should set player.isWinner to true if called for all 3 moves in either diagonal", function() {
+			player.customInitPlayer('X');
+			expect(player.isWinner).to.be.equal(false);
+			player.updateScore(0, 0);
+			player.updateScore(1, 1);
+			player.updateScore(2, 2,);
+			expect(player.isWinner).to.be.equal(true);
+			
+			player.customInitPlayer('O');
+			expect(player.isWinner).to.be.equal(false);
+			player.updateScore(0, 2);
+			player.updateScore(1, 1);
+			player.updateScore(2, 0);
+			expect(player.isWinner).to.be.equal(true);
+		})
+		it("should throw an error if row or col are any numbers besides 0, 1, and 2", function() {
+			var row = 1;
+			var col = 5;
+			player.customInitPlayer('X');
+			
+			expect(player.updateScore.bind(player, row, col)).to.throw("row and col must both be between 0 and 2(inclusive), got " + row + " and " + col);
+			
+			row = -2;
+			col = 2;
+			expect(player.updateScore.bind(player, row, col)).to.throw("row and col must both be between 0 and 2(inclusive), got " + row + " and " + col);
+		});
+	
+		it("should not set player.isWinner to true if it is not called with 3 moves in the same row, column, or diagonal", function() {
+			player.customInitPlayer("O");
+			expect(player.isWinner).to.be.equal(false);
+			player.updateScore(0, 0);
+			player.updateScore(0, 1);
+			player.updateScore(1, 0);
+			player.updateScore(1, 2);
+			player.updateScore(2, 1);
+			player.updateScore(2, 2);
+			expect(player.isWinner).to.be.equal(false);
+		})
 });
+
+
+
+
+
+
+
+
+
