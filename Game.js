@@ -126,12 +126,18 @@ class Game {
 	* TODO: handle promise rejection.
 	**/
 	getInputs(prompts) {
+        if (arguments.length > 1)
+          prompts = [].slice.call(arguments);
+        if (prompts == null)
+          prompts == [""];
 		return new Promise((resolve, reject) => {
 			var answers = [];
-			process.stdout.write(prompts.shift());
+            if (prompts.length > 0)
+			 process.stdout.write(prompts.shift());
 			this.setInputCallback((input) => {
 				answers.push(input);
 				if (prompts.length == 0) {
+                    console.log("\n\n\n\nANSWERS: ", answers);
 					resolve(answers);
 				} else {
 					process.stdout.write(prompts.shift());

@@ -45,6 +45,41 @@ describe("getInput(prompt)", function() {
 });
 
 
+
+describe("getInputs(prompt)", function() { 
+	var game; 
+  beforeEach(function () {
+		game = new Game(); 
+		//stub game.listen, to prevent it from listening for input and keeping the process open after test finishes
+		var listenStub = sinon.stub(game, "listen");
+  });
+	 
+		
+	it("should return a promise that resolves with an array of input values entered into the console, in order, and of the same length as the number of parameters passed into the function", function() {
+		//wait for next event loop tick, then send test input to the input callback
+      process.nextTick(function mockResponse() {
+        game.inputCB("test input");
+        
+        process.nextTick(function mockResponse2() {
+          game.inputCB("test input 2");
+        })
+      });
+		
+		
+		return game.getInputs(" ", " ")
+			.then(function (response) {
+              console.log("ans - ", response);
+              expect(response[0]).to.be.equal("test input");
+              expect(response[1]).to.be.equal("test input 2");
+              expect(response.length).to.be.equal(2);
+			});
+	});
+  
+  
+	 
+});
+
+
 //make sure both users are initialized correctly and playerX goes first when the game is started
 describe("startGame()", function() {
 	var game; 

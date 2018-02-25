@@ -15,6 +15,8 @@ class HumanPlayer {
 	}
 	
 	initPlayer(mark) {
+        if (typeof mark != "string")
+          throw Error("mark must be of type 'string', instead received " + (typeof mark));
 		this.mark = mark;
 		
 		//initialize totals for each possible line to zero
@@ -29,6 +31,7 @@ class HumanPlayer {
 	
 
 	updateScore(row, col) { 
+      console.log("\n\n\nUPDATE SCORES: " + row + " - " + col);
 		this.rowScores[row]++;
 		if (this.rowScores[row] == 3)
 			this.isWinner = true;
